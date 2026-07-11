@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArenaFlow 2026 - FIFA World Cup Operations Command</title>
+    <meta name="description" content="Enhance your FIFA World Cup 2026 matchday experience. ArenaFlow leverages Generative AI to optimize crowd management, navigation, accessibility, and real-time operational decisions." />
+    
+    <!-- Premium Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-container">
+      
+      <!-- Top Premium Broadcast Header -->
+      <header class="main-header">
+        <div class="header-logo">
+          <div class="logo-badge-container">
+            <span class="logo-badge">FIFA26</span>
+            <span class="logo-pulse"></span>
+          </div>
+          <div class="logo-text">
+            <h1>ArenaFlow</h1>
+            <span class="sub-logo">Tournament Operations & Crowd Navigation Hub</span>
+          </div>
+        </div>
+        
+        <!-- Sleek Scoreboard Widget -->
+        <div class="scoreboard-widget" id="matchBanner">
+          <div class="live-tag"><span class="live-dot"></span>LIVE</div>
+          <div class="scoreboard-teams">
+            <div class="team">
+              <span class="team-name">USA</span>
+            </div>
+            <div class="score-box">
+              <span id="scoreVal">1 - 1</span>
+            </div>
+            <div class="team">
+              <span class="team-name">ENG</span>
+            </div>
+          </div>
+          <div class="scoreboard-meta">
+            <span class="time-elapsed" id="timeVal">68'</span>
+            <span class="meta-divider">|</span>
+            <span class="half-info" id="statusVal">2nd Half</span>
+          </div>
+          <button id="btnSimEvent" class="btn-sim-event-icon" aria-label="Simulate Match Event" title="Simulate Match Event"><i data-lucide="sparkles"></i></button>
+        </div>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 0.75rem;">
+          <!-- Theme Toggle Button (Light / Dark Mode) -->
+          <button id="btnToggleTheme" class="btn-theme-toggle" aria-label="Toggle Light/Dark Mode" title="Toggle Light/Dark Mode">
+            <i data-lucide="sun"></i>
+          </button>
+          <!-- Portal Toggle Capsule -->
+          <div class="portal-capsule-toggle">
+            <button class="portal-btn active" id="btnToggleFan">Fan Hub</button>
+            <button class="portal-btn" id="btnToggleStaff">Command Center</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Mission Control Workspace -->
+      <main class="main-workspace">
+        <div class="command-grid">
+          
+          <!-- COLUMN 1: INTERACTION CARD (LEFT) -->
+          <aside class="col-interaction glass-card">
+            
+            <!-- FAN PORTAL HUB -->
+            <div id="fanPortalContent" class="portal-box">
+              <div class="pill-tabs">
+                <button class="pill-tab-btn active" id="tabFanAssistantBtn">
+                  <i data-lucide="bot"></i><span>AI Assistant</span>
+                </button>
+                <button class="pill-tab-btn" id="tabFanTicketBtn">
+                  <i data-lucide="ticket"></i><span>Ticket Scan</span>
+                </button>
+                <button class="pill-tab-btn" id="tabFanOrderBtn">
+                  <i data-lucide="utensils"></i><span>Order Food</span>
+                </button>
+              </div>
+
+              <!-- Tab 1: AI Chatbot -->
+              <div id="fanTabAssistant" class="tab-pane active">
+                <div class="section-banner" style="display: flex; justify-content: space-between; align-items: center;">
+                  <span class="section-title" style="margin: 0;">Matchday AI Assistant</span>
+                  <div style="display: flex; align-items: center; gap: 0.35rem;">
+                    <!-- Custom Styled Dropdown select wrapper -->
+                    <div class="custom-select-wrapper custom-select-lang" id="customLanguageSelectWrapper">
+                      <button type="button" class="custom-select-trigger" id="customLanguageTrigger">
+                        <span id="customLanguageTriggerText">English (EN)</span>
+                        <i data-lucide="chevron-down" class="select-chevron"></i>
+                      </button>
+                      <div class="custom-select-options hidden" id="customLanguageOptions">
+                        <!-- Populated dynamically via JS -->
+                      </div>
+                    </div>
+                    
+                    <!-- AI Settings Cog Icon Button -->
+                    <button type="button" id="btnOpenAiConfig" class="custom-select-trigger ai-settings-btn" style="border-radius: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; flex-shrink: 0;" title="Configure AI Behavior">
+                      <i data-lucide="settings" style="width: 14px; height: 14px;"></i>
+                    </button>
+                  </div>
+                  <!-- Hidden select for event dispatchers -->
+                  <select id="languageSelect" class="lang-select hidden">
+                    <option value="en">English (EN)</option>
+                    <option value="es">Español (ES)</option>
+                    <option value="fr">Français (FR)</option>
+                    <option value="ar">العربية (AR)</option>
+                    <option value="pt">Português (PT)</option>
+                    <option value="de">Deutsch (DE)</option>
+                    <option value="ja">日本語 (JA)</option>
+                    <option value="zh">中文 (ZH)</option>
+                  </select>
+                </div>
+
+                <div class="chat-container">
+                  <div class="chat-messages" id="chatMessages">
+                    <div class="message system-message">
+                      <div class="message-content">
+                        <p><strong>FIFA Matchday AI</strong> connected. Ask about transit, safety policies, menus, or gates.</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="quick-prompts-grid" id="quickPromptsGrid">
+                    <button class="quick-prompt-chip" data-prompt="What is the stadium bag policy?"><i data-lucide="briefcase"></i> Bag Policy</button>
+                    <button class="quick-prompt-chip" data-prompt="Where is the closest light rail station?"><i data-lucide="train"></i> Transit Options</button>
+                    <button class="quick-prompt-chip" data-prompt="Show me vegetarian options at concessions"><i data-lucide="apple"></i> Vegetarian Options</button>
+                    <button class="quick-prompt-chip" data-prompt="Where can I find a water refill station?"><i data-lucide="droplet"></i> Water Refill</button>
+                    <button class="quick-prompt-chip" data-prompt="Where is the Fan Gear Megastore?"><i data-lucide="shopping-bag"></i> Fan Megastore</button>
+                    <button class="quick-prompt-chip" data-prompt="How can I earn sustainability points?"><i data-lucide="sprout"></i> Earn Eco XP</button>
+                    <button class="quick-prompt-chip" data-prompt="Where is the emergency first aid station?"><i data-lucide="heart-pulse"></i> Medical Aid</button>
+                  </div>
+
+                  <div class="chat-input-wrapper">
+                    <input type="text" id="chatInputField" placeholder="Ask about gates, transit, policies..." />
+                    <button id="sendChatBtn" class="btn-send"><i data-lucide="send"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 2: Ticket Scanner -->
+              <div id="fanTabTicket" class="tab-pane hidden">
+                <div class="section-banner">
+                  <span class="section-title">Digital Matchday Admission</span>
+                </div>
+                <div class="ticket-scanner-card">
+                  <p class="widget-desc">Scan your digital barcoded ticket to pre-plan security lanes and map routes.</p>
+                  <div class="form-group">
+                    <label>Enter Seat Section Number (101 - 112)</label>
+                    <div class="scanner-input-row">
+                      <input type="number" id="ticketSeatInput" min="101" max="112" placeholder="e.g., 102" class="form-input" />
+                      <button id="btnScanTicket" class="btn btn-primary"><i data-lucide="scan"></i> Scan</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Simulated Barcode Scanner Camera Viewport -->
+                <div class="sim-scanner-viewport" id="simScannerViewport" style="margin-top: 0.75rem; position: relative; border-radius: 12px; border: 1.5px dashed rgba(255,255,255,0.12); background: rgba(0,0,0,0.3); height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; overflow: hidden;">
+                  <div class="laser-scanner-line"></div>
+                  <i data-lucide="camera" style="width: 24px; height: 24px; color: var(--primary); margin-bottom: 0.25rem;"></i>
+                  <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Simulate Ticket Camera Scan</span>
+                  <small style="font-size: 0.65rem; color: var(--text-muted);">Place ticket barcode in front of camera lens</small>
+                </div>
+
+                <!-- Digital Ticket Viewport -->
+                <div class="ticket-pass-wrapper" style="margin-top: 0.85rem;">
+                  <!-- Placeholder Ticket Stub shown when not scanned -->
+                  <div id="ticketPlaceholder" class="boarding-pass placeholder-pass" style="text-align: center; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; border: 1.5px dashed rgba(255,255,255,0.08); background: rgba(0,0,0,0.15); border-radius: 20px;">
+                    <i data-lucide="ticket" style="width: 32px; height: 32px; color: rgba(255,255,255,0.15); margin-bottom: 0.25rem;"></i>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">No Ticket Active</span>
+                    <p style="font-size: 0.72rem; color: var(--text-muted); max-width: 200px; margin: 0 auto; line-height: 1.35;">Scan a seat section or use the camera simulator to activate your digital admission pass.</p>
+                  </div>
+
+                  <!-- Rendered Digital Ticket stub -->
+                  <div id="ticketPassContainer" class="hidden">
+                    <div class="boarding-pass">
+                      <div class="pass-top">
+                        <div class="pass-logo"><i data-lucide="trophy"></i> FIFA 2026</div>
+                        <div class="pass-type font-title">SEAT ENTRY PASS</div>
+                      </div>
+                      <div class="pass-mid">
+                        <div class="pass-grid">
+                          <div class="pass-cell">
+                            <span class="c-lbl">Section</span>
+                            <span class="c-val text-cyan" id="passSection">102</span>
+                          </div>
+                          <div class="pass-cell" style="text-align: right;">
+                            <span class="c-lbl">Gate Entrance</span>
+                            <span class="c-val text-cyan" id="passGate">Gate A</span>
+                          </div>
+                        </div>
+                        
+                        <div class="pass-grid" style="margin-top: 0.75rem;">
+                          <div class="pass-cell">
+                            <span class="c-lbl">Accessibility</span>
+                            <span class="c-val" id="passAccess" style="font-size: 0.72rem;">Yes - Ramps & Priority Lanes</span>
+                          </div>
+                          <div class="pass-cell" style="text-align: right;">
+                            <span class="c-lbl">Match Arena</span>
+                            <span class="c-val" style="font-size: 0.72rem; color: var(--accent-gold);">MetLife Stadium</span>
+                          </div>
+                        </div>
+
+                        <!-- Digital Barcode inside the ticket stub -->
+                        <div class="pass-barcode-wrapper" style="margin-top: 0.85rem; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
+                          <div class="barcode-lines">
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                          </div>
+                          <small class="barcode-number" id="passBarcodeText" style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px;">#FIFA-2026-SEC102</small>
+                        </div>
+                      </div>
+                      <div class="pass-cut"></div>
+                      <div class="pass-bot" style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+                        <button id="btnRouteFromTicket" class="btn btn-accent-glow" style="width:100%;"><i data-lucide="navigation-2"></i> Plot Optimal Route</button>
+                        <button id="btnClearScan" style="align-self: center; font-size: 0.75rem; color: var(--text-muted); border: none; background: transparent; cursor: pointer; margin-top: 0.25rem;">Scan Different Ticket</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Pre-Order Food -->
+              <div id="fanTabOrder" class="tab-pane hidden">
+                <div class="section-banner">
+                  <span class="section-title">Mobile Concession Ordering</span>
+                </div>
+                <div class="concessions-order-form">
+                  <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <label>Select Concession Stand</label>
+                    <!-- Custom Styled Dropdown select wrapper -->
+                    <div class="custom-select-wrapper" id="customConcessionSelectWrapper">
+                      <button type="button" class="custom-select-trigger" id="customConcessionTrigger">
+                        <span id="customConcessionTriggerText">Select Concession Stand</span>
+                        <i data-lucide="chevron-down" class="select-chevron"></i>
+                      </button>
+                      <div class="custom-select-options hidden" id="customConcessionOptions">
+                        <!-- Populated dynamically via JS -->
+                      </div>
+                    </div>
+                    <!-- Hidden select for form bindings compatibility -->
+                    <select id="orderConcessionSelect" class="form-select hidden">
+                      <!-- Synced in JS -->
+                    </select>
+                  </div>
+
+                  <div class="menu-items-grid" id="concessionMenuDisplay" style="margin-bottom: 0.75rem;">
+                    <!-- Injected dynamically -->
+                  </div>
+
+                  <!-- Placeholder Cart Stub shown when empty -->
+                  <div id="cartPlaceholder" class="boarding-pass placeholder-pass" style="text-align: center; padding: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; border: 1.5px dashed rgba(255,255,255,0.08); background: rgba(0,0,0,0.15); border-radius: 20px; margin-top: 0.5rem;">
+                    <i data-lucide="shopping-bag" style="width: 28px; height: 28px; color: rgba(255,255,255,0.15); margin-bottom: 0.15rem;"></i>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Your Cart is Empty</span>
+                    <p style="font-size: 0.72rem; color: var(--text-muted); max-width: 220px; margin: 0 auto; line-height: 1.35;">Select a vendor above and tap "Add" on menu items to begin your pre-order cart receipt.</p>
+                  </div>
+
+                  <!-- Dynamic Shopping Cart -->
+                  <div id="cartSection" class="cart-summary-box hidden" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass); border-radius: 12px; padding: 0.75rem; margin-top: 0.5rem;">
+                    <div class="cart-header-row">
+                      <h5>Concession Cart</h5>
+                      <button id="btnClearCart" class="btn-clear-cart">Clear All</button>
+                    </div>
+                    
+                    <div id="cartItemsList" class="cart-items-list">
+                      <!-- Dynamically populated rows -->
+                    </div>
+                    
+                    <div class="receipt-breakdown">
+                      <div class="receipt-line">
+                        <span>Subtotal:</span>
+                        <span id="cartSubtotal">$0.00</span>
+                      </div>
+                      <div class="receipt-line">
+                        <span>NJ Tax (6.625%):</span>
+                        <span id="cartTax">$0.00</span>
+                      </div>
+                      <div class="receipt-line discount" id="cartDiscountRow">
+                        <span>Eco-Discount (15%):</span>
+                        <span id="cartDiscount">-$0.00</span>
+                      </div>
+                      <div class="receipt-line total">
+                        <span>Total:</span>
+                        <span id="cartTotal">$0.00</span>
+                      </div>
+                    </div>
+                    
+                    <button id="btnPlaceOrder" class="btn btn-primary" style="width: 100%; border-radius: 20px;"><i data-lucide="shopping-cart"></i> Submit Pre-Order</button>
+                  </div>
+
+                  <!-- Live Order Tracker -->
+                  <div id="orderProgressContainer" class="order-progress-stepper hidden">
+                    <div class="stepper-header">
+                      <h5>Concession Tracker</h5>
+                      <span class="stepper-timer" id="orderTimer">0:15</span>
+                    </div>
+                    <div class="stepper-steps" style="margin-bottom: 0.5rem;">
+                      <div class="stepper-step active" id="step1">
+                        <span class="s-dot"></span>
+                        <span class="s-lbl">Received</span>
+                      </div>
+                      <div class="stepper-step" id="step2">
+                        <span class="s-dot"></span>
+                        <span class="s-lbl">Cooking</span>
+                      </div>
+                      <div class="stepper-step" id="step3">
+                        <span class="s-dot"></span>
+                        <span class="s-lbl">Ready</span>
+                      </div>
+                    </div>
+                    <button id="btnDismissTracker" class="btn btn-tonal hidden" style="width: 100%; border-radius: 12px; margin-top: 0.75rem; font-size: 0.72rem; padding: 0.35rem;"><i data-lucide="check"></i> Collect & Dismiss</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAFF PORTAL HUB -->
+            <div id="staffPortalContent" class="portal-box hidden">
+              <div class="pill-tabs">
+                <button class="pill-tab-btn active" id="tabStaffSimBtn">
+                  <i data-lucide="radio"></i><span>Simulation</span>
+                </button>
+                <button class="pill-tab-btn" id="tabStaffVolunteersBtn">
+                  <i data-lucide="users"></i><span>Volunteers</span>
+                </button>
+              </div>
+
+              <!-- Tab 1: Incident Simulations -->
+              <div id="staffTabSim" class="tab-pane active">
+                <div class="section-banner">
+                  <span class="section-title">Egress Scenarios</span>
+                </div>
+                <div class="simulation-dashboard">
+                  <div class="simulation-grid-buttons" style="display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                    <button class="btn btn-sim active" id="simNormal">
+                      <i data-lucide="shield"></i>
+                      <div class="sim-btn-text">
+                        <strong>Normal Mode</strong>
+                        <span>Standard game entry operations</span>
+                      </div>
+                    </button>
+                    <button class="btn btn-sim" id="simPostMatch">
+                      <i data-lucide="door-open"></i>
+                      <div class="sim-btn-text">
+                        <strong>Full Egress</strong>
+                        <span>Post-match exit routes optimization</span>
+                      </div>
+                    </button>
+                    <button class="btn btn-sim" id="simWeather">
+                      <i data-lucide="cloud-lightning"></i>
+                      <div class="sim-btn-text">
+                        <strong>Severe Weather</strong>
+                        <span>Shelter-in-place & weather advisories</span>
+                      </div>
+                    </button>
+                    <button class="btn btn-sim" id="simIncident">
+                      <i data-lucide="octagon-alert"></i>
+                      <div class="sim-btn-text">
+                        <strong>Local Incident</strong>
+                        <span>Sector redirect & security protocols</span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <!-- Evacuation system card -->
+                  <div class="evacuation-trigger-card">
+                    <div class="evac-info">
+                      <h5><i data-lucide="megaphone" class="icon-red"></i> Emergency Evacuation Mode</h5>
+                      <p>Immediately halts play, broadcasts evacuations, and routes fans to nearest clear exits.</p>
+                    </div>
+                    <button id="btnEvacuate" class="btn btn-danger-glow"><i data-lucide="alert-triangle"></i> TRIGGER EVACUATION</button>
+                  </div>
+                </div>
+
+                <!-- Decision recommendations -->
+                <div class="decision-widget" style="margin-top: 0.75rem;">
+                  <div class="section-banner">
+                    <span class="section-title">AI Tactical Recommendations</span>
+                  </div>
+                  <div class="recommendations-container" id="aiRecommendations">
+                    <!-- Injected by simulation engine -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 2: Volunteer Dispatcher -->
+              <div id="staffTabVolunteers" class="tab-pane hidden">
+                <div class="section-banner">
+                  <span class="section-title">Staffing & Deployments</span>
+                </div>
+                <!-- Volunteer Deployment Controls -->
+                <div class="staffing-control-card" style="margin-top: 0.5rem;">
+                  <div class="staffing-header" style="margin-bottom: 0.75rem;">
+                    <h5 style="font-family: var(--font-title); font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">Gate Volunteer Allocations</h5>
+                    <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 0.15rem;">Dynamically allocate or deallocate volunteer streams to gates.</p>
+                  </div>
+                  <div class="staffing-rows" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div class="staff-row" style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.6rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 8px;">
+                      <div class="staff-info">
+                        <span style="font-weight: 600; font-size: 0.78rem; display: block; color: var(--text-primary);">Gate A Staffing</span>
+                        <small class="text-muted" style="font-size: 0.6rem; display: block; color: var(--text-muted);">Main Train departures entrance</small>
+                      </div>
+                      <div class="row-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate A" data-action="remove" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Decrease Gate A Staff"><i data-lucide="minus"></i></button>
+                        <strong id="gateAStaffVal" style="font-family: var(--font-mono); font-size: 0.85rem; min-width: 54px; text-align: center; color: var(--text-primary);">8 Staff</strong>
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate A" data-action="add" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Increase Gate A Staff"><i data-lucide="plus"></i></button>
+                      </div>
+                    </div>
+                    <div class="staff-row" style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.6rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 8px;">
+                      <div class="staff-info">
+                        <span style="font-weight: 600; font-size: 0.78rem; display: block; color: var(--text-primary);">Gate B Staffing</span>
+                        <small class="text-muted" style="font-size: 0.6rem; display: block; color: var(--text-muted);">Shuttle bus transfer concourse</small>
+                      </div>
+                      <div class="row-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate B" data-action="remove" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Decrease Gate B Staff"><i data-lucide="minus"></i></button>
+                        <strong id="gateBStaffVal" style="font-family: var(--font-mono); font-size: 0.85rem; min-width: 54px; text-align: center; color: var(--text-primary);">12 Staff</strong>
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate B" data-action="add" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Increase Gate B Staff"><i data-lucide="plus"></i></button>
+                      </div>
+                    </div>
+                    <div class="staff-row" style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.6rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 8px;">
+                      <div class="staff-info">
+                        <span style="font-weight: 600; font-size: 0.78rem; display: block; color: var(--text-primary);">Gate C Staffing</span>
+                        <small class="text-muted" style="font-size: 0.6rem; display: block; color: var(--text-muted);">Bus Terminal main portal</small>
+                      </div>
+                      <div class="row-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate C" data-action="remove" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Decrease Gate C Staff"><i data-lucide="minus"></i></button>
+                        <strong id="gateCStaffVal" style="font-family: var(--font-mono); font-size: 0.85rem; min-width: 54px; text-align: center; color: var(--text-primary);">10 Staff</strong>
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate C" data-action="add" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Increase Gate C Staff"><i data-lucide="plus"></i></button>
+                      </div>
+                    </div>
+                    <div class="staff-row" style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.6rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 8px;">
+                      <div class="staff-info">
+                        <span style="font-weight: 600; font-size: 0.78rem; display: block; color: var(--text-primary);">Gate D Staffing</span>
+                        <small class="text-muted" style="font-size: 0.6rem; display: block; color: var(--text-muted);">Rideshare Lot G connection</small>
+                      </div>
+                      <div class="row-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate D" data-action="remove" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Decrease Gate D Staff"><i data-lucide="minus"></i></button>
+                        <strong id="gateDStaffVal" style="font-family: var(--font-mono); font-size: 0.85rem; min-width: 54px; text-align: center; color: var(--text-primary);">6 Staff</strong>
+                        <button class="btn btn-secondary btn-xs adjust-staff-btn" data-gate-id="Gate D" data-action="add" style="width: 22px; height: 22px; border-radius: 50%; padding: 0; display: inline-flex; justify-content: center; align-items: center;" aria-label="Increase Gate D Staff"><i data-lucide="plus"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Volunteer translation dispatcher -->
+                <div class="dispatcher-card" style="margin-top: 0.75rem;">
+                  <div class="section-banner">
+                    <span class="section-title">Multilingual Broadcast</span>
+                  </div>
+                  <div class="dispatch-form-group" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <textarea id="dispatchMsgInput" placeholder="Broadcast instructions for staff (e.g., Redirect Section 102 traffic)..." class="form-textarea-dashboard" style="min-height: 70px;"></textarea>
+                    
+                    <div class="dispatch-selectors-row" style="display: flex; gap: 0.4rem; position: relative; z-index: 100;">
+                      <!-- Custom Sector Dropdown -->
+                      <div class="custom-select-wrapper custom-select-dashboard-wrapper" id="customSectorSelectWrapper">
+                        <button type="button" class="custom-select-trigger" id="customSectorTrigger">
+                          <span id="customSectorTriggerText" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">All Sectors</span>
+                          <i data-lucide="chevron-down" class="select-chevron"></i>
+                        </button>
+                        <div class="custom-select-options hidden" id="customSectorOptions">
+                          <!-- Populated dynamically via JS -->
+                        </div>
+                      </div>
+                      <select id="dispatchSector" class="form-select-dashboard hidden">
+                        <option value="all">All Sectors</option>
+                        <option value="north">North Gate</option>
+                        <option value="south">South Concourse</option>
+                        <option value="east">East Transport</option>
+                      </select>
+
+                      <!-- Custom Language Dropdown -->
+                      <div class="custom-select-wrapper custom-select-dashboard-wrapper" id="customBroadcastLangSelectWrapper">
+                        <button type="button" class="custom-select-trigger" id="customBroadcastLangTrigger">
+                          <span id="customBroadcastLangTriggerText" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">All Languages</span>
+                          <i data-lucide="chevron-down" class="select-chevron"></i>
+                        </button>
+                        <div class="custom-select-options hidden" id="customBroadcastLangOptions">
+                          <!-- Populated dynamically via JS -->
+                        </div>
+                      </div>
+                      <select id="dispatchLang" class="form-select-dashboard hidden">
+                        <option value="all">All Languages</option>
+                        <option value="es">Spanish (ES)</option>
+                        <option value="fr">French (FR)</option>
+                        <option value="ar">Arabic (AR)</option>
+                        <option value="pt">Portuguese (PT)</option>
+                        <option value="de">German (DE)</option>
+                        <option value="ja">Japanese (JA)</option>
+                        <option value="zh">Chinese (ZH)</option>
+                      </select>
+                    </div>
+                    
+                    <button id="btnDispatch" class="btn btn-primary" style="width: 100%; padding: 0.45rem; font-size: 0.75rem; border-radius: 6px; display: flex; justify-content: center; align-items: center; gap: 0.35rem;">
+                      <i data-lucide="radio" style="width: 14px; height: 14px; flex-shrink: 0;"></i>
+                      <span>Send Broadcast</span>
+                    </button>
+                  </div>
+                  
+                  <div class="dispatch-history-log">
+                    <div class="history-title">Broadcast Log</div>
+                    <div class="log-items-container" id="dispatchLogItems">
+                      <div class="empty-log">No announcements sent.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </aside>
+
+          <!-- COLUMN 2: CENTRAL MAP CANVAS (CENTER) -->
+          <section class="col-stadium-map glass-card">
+            <div class="map-header">
+              <div class="map-titles">
+                <h2 id="mapPanelTitle"><i data-lucide="map" class="icon-accent"></i> Stadium Visualizer</h2>
+                <p class="panel-subtitle" id="mapPanelSubtitle">Inspect crowd density and concessions routes in real-time.</p>
+              </div>
+              <div class="map-controls">
+                <button id="layerHeatmap" class="map-layer-btn"><i data-lucide="flame"></i> Heatmap</button>
+                <button id="layerQueues" class="map-layer-btn active"><i data-lucide="clock"></i> Queues</button>
+                <button id="btnEcoOverlay" class="map-layer-btn"><i data-lucide="leaf"></i> Eco-Score</button>
+              </div>
+            </div>
+
+            <!-- Stadium Seat / Gate Search -->
+            <div class="stadium-search-bar" style="margin-bottom: 0.75rem;">
+              <div class="input-icon-wrapper">
+                <i data-lucide="search"></i>
+                <input type="text" id="seatSearchInput" placeholder="Search: Section 112, Gate B, or Taco..." autocomplete="off" />
+                <button id="btnClearSearch" class="btn-clear-search" aria-label="Clear search query" title="Clear search"><i data-lucide="x"></i></button>
+                <div id="searchSuggestions" class="search-suggestions-box hidden"></div>
+              </div>
+              <button id="btnFindSeat" class="btn btn-primary">Locate</button>
+            </div>
+
+            <!-- The SVG Map Layout -->
+            <div class="map-viewport" id="mapCanvasContainer">
+              <!-- Floating Zoom Controls -->
+              <div class="map-zoom-controls">
+                <button id="btnMapFloatClearRoute" class="hidden" title="Clear Route" aria-label="Clear Route" style="background: var(--accent-red) !important; border-color: var(--accent-red) !important; color: white !important; margin-bottom: 0.5rem;"><i data-lucide="x"></i></button>
+                <button id="btnZoomIn" title="Zoom In" aria-label="Zoom In"><i data-lucide="zoom-in"></i></button>
+                <button id="btnZoomOut" title="Zoom Out" aria-label="Zoom Out"><i data-lucide="zoom-out"></i></button>
+                <button id="btnZoomReset" title="Reset View" aria-label="Reset View"><i data-lucide="maximize"></i></button>
+              </div>
+              <div class="map-legend">
+                <div class="legend-item"><span class="legend-icon">🚪</span>Gate</div>
+                <div class="legend-item"><span class="legend-icon">🍔</span>Food Concession</div>
+                <div class="legend-item"><span class="legend-icon">🚆</span>Transit Terminal</div>
+                <div class="legend-item"><span class="legend-icon">🚻</span>Restroom</div>
+                <div class="legend-item"><span class="legend-icon">📋</span>Info Desk</div>
+                <div class="legend-item"><span class="legend-icon">🛍</span>Fan Store</div>
+                <div class="legend-item"><span class="legend-icon">💧</span>Water Oasis</div>
+                <div class="legend-item"><span class="legend-dot active-route"></span>AI Path</div>
+              </div>
+
+              <div id="stadiumMapWrapper" class="map-wrapper">
+                <svg id="stadiumSvg" viewBox="0 0 800 600" width="100%" height="100%"></svg>
+              </div>
+
+              <!-- Route Instruction Overlay -->
+              <div id="routeOverlayCard" class="route-overlay-card glass-card hidden">
+                <div class="route-header">
+                  <h4><i data-lucide="navigation" class="icon-accent"></i> Pathfinder Route Recommendations</h4>
+                  <button id="closeRouteBtn" class="close-small-btn">&times;</button>
+                </div>
+                <div id="routeDetails" class="route-details">
+                  <!-- Injected dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Navigation Icons/Filters -->
+            <div class="quick-nav-actions" style="margin: 0.5rem 0;">
+              <button id="btnQuickRestrooms" class="btn btn-quick"><i data-lucide="bath"></i> Restrooms</button>
+              <button id="btnQuickAccessibility" class="btn btn-quick"><i data-lucide="accessibility"></i> Accessibility Access</button>
+              <button id="btnQuickFirstAid" class="btn btn-quick"><i data-lucide="heart-pulse"></i> First Aid</button>
+              <button id="btnQuickTransit" class="btn btn-quick"><i data-lucide="train"></i> Transit Terminals</button>
+            </div>
+
+            <!-- Live commentary scrolling ticker -->
+            <div class="live-commentary-ticker">
+              <div class="ticker-label"><i data-lucide="radio-tower"></i> MATCH FEED</div>
+              <div class="ticker-scroller">
+                <div class="ticker-text" id="liveCommentaryText">Match status: USA 1 - 1 ENG (68') • Concourse queue wait times normal at Sectors 104, 108 • MetLife Rail operations running normal scheduling.</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- COLUMN 3: TELEMETRY & ANALYTICS (RIGHT) -->
+          <aside class="col-telemetry glass-card">
+            
+            <!-- FAN PORTAL RIGHT SIDEBAR -->
+            <div id="fanTelemetryContent" class="telemetry-box">
+              <div class="section-banner">
+                <span class="section-title">GreenFan Eco-Scorecard</span>
+              </div>
+              
+              <div class="eco-telemetry-widget">
+                <div class="eco-metric-row">
+                  <div class="eco-circle-graph">
+                    <span class="eco-circle-val" id="ecoPointsVal">0</span>
+                    <span class="eco-circle-lbl">XP</span>
+                  </div>
+                  <div class="eco-details-col">
+                    <div class="eco-sub-stat">CO₂ Saved: <strong id="ecoCo2Val">0.0 kg</strong></div>
+                    <div class="eco-sub-stat">Badge: <strong id="ecoRankVal" style="color: var(--secondary);">Green Starter</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Transit board -->
+              <div class="transit-board-widget" style="margin-top: 1rem;">
+                <div class="section-banner">
+                  <span class="section-title">Eco-Transit Board</span>
+                </div>
+                <p class="widget-desc">Departures from MetLife Central terminals.</p>
+                <div class="transit-schedule-list" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                  <div class="transit-schedule-item eco-green">
+                    <div class="transit-line">
+                      <i data-lucide="train" class="icon-accent"></i>
+                      <span>MetLife Rail (Gate A)</span>
+                    </div>
+                    <div class="transit-time">
+                      <span class="time-countdown text-green">4 mins</span>
+                      <small class="transit-status">AI: Highly Recommended</small>
+                    </div>
+                  </div>
+                  <div class="transit-schedule-item eco-green">
+                    <div class="transit-line">
+                      <i data-lucide="bus" class="icon-accent"></i>
+                      <span>Express Bus (Gate C)</span>
+                    </div>
+                    <div class="transit-time">
+                      <span class="time-countdown text-green">6 mins</span>
+                      <small class="transit-status">AI: Normal Service</small>
+                    </div>
+                  </div>
+                  <div class="transit-schedule-item eco-green">
+                    <div class="transit-line">
+                      <i data-lucide="bike" class="icon-accent"></i>
+                      <span>E-Bike Sharing (Gate A)</span>
+                    </div>
+                    <div class="transit-time">
+                      <span class="time-countdown text-green">Available</span>
+                      <small class="transit-status">AI: Highly Recommended</small>
+                    </div>
+                  </div>
+                  <div class="transit-schedule-item eco-green">
+                    <div class="transit-line">
+                      <i data-lucide="zap" class="icon-accent"></i>
+                      <span>Electric Shuttle (Gate B)</span>
+                    </div>
+                    <div class="transit-time">
+                      <span class="time-countdown text-green">3 mins</span>
+                      <small class="transit-status">AI: Highly Recommended</small>
+                    </div>
+                  </div>
+                  <div class="transit-schedule-item eco-amber">
+                    <div class="transit-line">
+                      <i data-lucide="bus" class="icon-accent"></i>
+                      <span>Parking Shuttle (Gate C)</span>
+                    </div>
+                    <div class="transit-time">
+                      <span class="time-countdown text-amber">8 mins</span>
+                      <small class="transit-status text-amber">AI: Moderate Traffic</small>
+                    </div>
+                  </div>
+                  <div class="transit-schedule-item eco-red">
+                    <div class="transit-line">
+                      <i data-lucide="car" class="icon-accent"></i>
+                      <span>Rideshare Lot G (Gate D)</span>
+                    </div>
+                    <div class="transit-time">
+                      <span class="time-countdown text-red">40m delay</span>
+                      <small class="transit-status text-red">AI: Avoid - High Traffic</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAFF PORTAL RIGHT SIDEBAR -->
+            <div id="staffTelemetryContent" class="telemetry-box hidden">
+              <div class="section-banner">
+                <span class="section-title">Gate Congestion Analytics</span>
+              </div>
+              
+              <!-- Queues bars -->
+              <div class="gate-analytics-bars" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+                <div class="analytics-bar-wrapper">
+                  <div class="bar-labels">
+                    <span>Gate A Wait Time</span>
+                    <strong id="barGateAVal">5 mins</strong>
+                  </div>
+                  <div class="bar-backdrop">
+                    <div class="bar-fill" id="barGateAFill" style="width: 25%;"></div>
+                  </div>
+                </div>
+                <div class="analytics-bar-wrapper">
+                  <div class="bar-labels">
+                    <span>Gate B Wait Time</span>
+                    <strong id="barGateBVal">12 mins</strong>
+                  </div>
+                  <div class="bar-backdrop">
+                    <div class="bar-fill warning" id="barGateBFill" style="width: 60%;"></div>
+                  </div>
+                </div>
+                <div class="analytics-bar-wrapper">
+                  <div class="bar-labels">
+                    <span>Gate C Wait Time</span>
+                    <strong id="barGateCVal">8 mins</strong>
+                  </div>
+                  <div class="bar-backdrop">
+                    <div class="bar-fill warning" id="barGateCFill" style="width: 40%;"></div>
+                  </div>
+                </div>
+                <div class="analytics-bar-wrapper">
+                  <div class="bar-labels">
+                    <span>Gate D Wait Time</span>
+                    <strong id="barGateDVal">6 mins</strong>
+                  </div>
+                  <div class="bar-backdrop">
+                    <div class="bar-fill" id="barGateDFill" style="width: 30%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Concessions analytics -->
+              <div class="concession-analytics-bars" style="margin-top: 1rem;">
+                <div class="section-banner">
+                  <span class="section-title">Concession Wait Times</span>
+                </div>
+                <div class="analytics-grid" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+                  <div class="analytics-bar-wrapper">
+                    <div class="bar-labels">
+                      <span>Taco Cantina (Section 102)</span>
+                      <strong id="barConcess1Val">4 mins</strong>
+                    </div>
+                    <div class="bar-backdrop">
+                      <div class="bar-fill" id="barConcess1Fill" style="width: 20%;"></div>
+                    </div>
+                  </div>
+                  <div class="analytics-bar-wrapper">
+                    <div class="bar-labels">
+                      <span>Gridiron Grill (Section 104)</span>
+                      <strong id="barConcess2Val">15 mins</strong>
+                    </div>
+                    <div class="bar-backdrop">
+                      <div class="bar-fill danger" id="barConcess2Fill" style="width: 75%;"></div>
+                    </div>
+                  </div>
+                  <div class="analytics-bar-wrapper">
+                    <div class="bar-labels">
+                      <span>Vegan Goal (Section 108)</span>
+                      <strong id="barConcess3Val">3 mins</strong>
+                    </div>
+                    <div class="bar-backdrop">
+                      <div class="bar-fill" id="barConcess3Fill" style="width: 15%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Smart HVAC sensor telemetry widget -->
+              <div class="hvac-telemetry-widget" style="margin-top: 1.25rem;">
+                <div class="section-banner">
+                  <span class="section-title">Telemetry Sensor Grid</span>
+                </div>
+                <div class="sensor-adjuster" style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                  <div class="sensor-row">
+                    <span>HVAC Temperature</span>
+                    <div class="slider-control-group">
+                      <input type="range" id="hvacSlider" min="65" max="78" value="72" class="range-slider" />
+                      <strong id="hvacValue">72°F</strong>
+                    </div>
+                  </div>
+                  <div class="sensor-row">
+                    <span>Stadium Floodlights</span>
+                    <div class="slider-control-group">
+                      <input type="range" id="lightSlider" min="20" max="100" value="85" class="range-slider" />
+                      <strong id="lightValue">85%</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </aside>
+
+        </div>
+      </main>
+
+      <!-- Eco-Tracker Slide-up Overlay -->
+      <div id="ecoOverlay" class="eco-overlay glass-card hidden">
+        <div class="eco-overlay-header">
+          <h3><i data-lucide="leaf" class="icon-green"></i> World Cup GreenFan Eco-Tracker</h3>
+          <button id="closeEcoBtn" class="close-btn">&times;</button>
+        </div>
+        <div class="eco-overlay-body">
+          <div class="eco-tasks-section">
+            <h4>Log Sustainable Activities to Earn Concession Rewards</h4>
+            <div class="eco-tasks-list">
+              <div class="eco-task-item" data-points="15" data-co2="1.2">
+                <div class="task-info">
+                  <h5>Took Metro Transit to Stadium</h5>
+                  <p>Skip cars, reduce emissions. Earn 15 pts.</p>
+                </div>
+                <button class="btn btn-eco-action">Log Activity (+15 XP)</button>
+              </div>
+              <div class="eco-task-item" data-points="10" data-co2="0.3">
+                <div class="task-info">
+                  <h5>Recycled Beverage Bottles</h5>
+                  <p>Used green bins inside stadium. Earn 10 pts.</p>
+                </div>
+                <button class="btn btn-eco-action">Log Activity (+10 XP)</button>
+              </div>
+              <div class="eco-task-item" data-points="5" data-co2="0.1">
+                <div class="task-info">
+                  <h5>Used Reusable Beverage Container</h5>
+                  <p>Refilled water at stadium stations. Earn 5 pts.</p>
+                </div>
+                <button class="btn btn-eco-action">Log Activity (+5 XP)</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="eco-rewards-claim">
+            <h4>Available Fan Rewards</h4>
+            <div class="rewards-grid">
+              <div class="reward-card disabled" id="reward1">
+                <h5>15% Concession Discount</h5>
+                <p>Requires 30 Points</p>
+              </div>
+              <div class="reward-card disabled" id="reward2">
+                <h5>Exclusive Eco-Badge Pin</h5>
+                <p>Requires 50 Points</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- App Status/Footer -->
+      <footer class="app-footer">
+        <p>FIFA World Cup 2026 Stadium Management Suite. AI-Powered Intelligence. &copy; 2026.</p>
+        <button id="btnRunDiagnostics" class="btn btn-secondary btn-xs" style="margin-left: 1rem;" aria-label="Run automated diagnostics unit tests"><i data-lucide="shield-check"></i> Run Diagnostics</button>
+        <div class="footer-stats">
+          <span>Active Volunteers: <strong>320</strong></span>
+          <span>Stadium Temp: <strong id="footTemp">72°F (Optimal)</strong></span>
+          <span>Green Transport Ratio: <strong id="footGreenTransport">42%</strong></span>
+        </div>
+      </footer>
+    </div>
+    <div id="aiConfigModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: transparent; z-index: 9999;">
+      <!-- Slide-in Drawer Glass Card -->
+      <div class="glass-card" style="position: fixed; top: 0; right: 0; width: 385px; height: 100vh; border-left: 1px solid rgba(0, 240, 255, 0.2); border-top: none; border-bottom: none; border-right: none; background: rgba(11, 15, 25, 0.96); border-radius: 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; box-shadow: -8px 0 32px rgba(0,0,0,0.65); transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); height: 100%;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="cpu" style="color: var(--primary); width: 18px; height: 18px;"></i>
+            <h3 style="font-family: var(--font-title); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; color: var(--text-primary);">AI Assistant Config</h3>
+          </div>
+          <button type="button" id="btnCloseAiConfig" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; outline: none;">
+            <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+          </button>
+        </div>
+
+        <!-- Body Contents -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem; flex: 1; overflow-y: auto; padding-right: 0.25rem;">
+          
+          <!-- Reasoning Core Selector -->
+          <div style="display: flex; flex-direction: column; gap: 0.35rem; position: relative;">
+            <span style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;">AI Reasoning Core:</span>
+            
+            <!-- Custom Select Wrapper -->
+            <div class="custom-select-dashboard-wrapper" id="customModelSelectWrapper" style="width: 100%;">
+              <button type="button" class="custom-select-trigger" id="customModelTrigger" style="text-transform: none; height: 34px;">
+                <span id="customModelTriggerText">Standard Mode (Gemini Flash)</span>
+                <i data-lucide="chevron-down" class="select-chevron"></i>
+              </button>
+              <div class="custom-select-options hidden" id="customModelOptions" style="max-height: 180px; position: absolute; width: 100%; top: 100%;">
+                <div class="custom-option selected" data-value="gemini-2.5-flash">Standard Mode (Gemini Flash)</div>
+                <div class="custom-option" data-value="gemini-2.5-pro">Expert Mode (Gemini Pro)</div>
+              </div>
+            </div>
+            
+            <!-- Hidden Select -->
+            <select id="geminiModelSelector" class="hidden">
+              <option value="gemini-2.5-flash">Standard Mode (Gemini Flash)</option>
+              <option value="gemini-2.5-pro">Expert Mode (Gemini Pro)</option>
+            </select>
+          </div>
+
+          <!-- Behavioral Directives Textarea -->
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;">AI Behavioral Directives:</span>
+              <button type="button" id="resetSystemPrompt" style="background: none; border: none; padding: 0; color: var(--primary); font-size: 0.68rem; font-weight: bold; cursor: pointer; outline: none;">Reset Default</button>
+            </div>
+            <textarea id="systemPromptCustomizer" style="height: 250px; background: rgba(0,0,0,0.55); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.6rem; color: var(--text-secondary); font-size: 0.7rem; font-family: var(--font-mono); resize: vertical; line-height: 1.4; outline: none; width: 100%;" placeholder="Customize how the AI stadium assistant behaves..."></textarea>
+          </div>
+
+          <!-- Live Telemetry Monitor -->
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <span style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 600;">Real-time Telemetry:</span>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-glass);">
+              <div style="text-align: center; border-right: 1px solid rgba(255,255,255,0.08);">
+                <span style="display: block; font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase;">AI Speed</span>
+                <strong style="font-size: 0.8rem; color: var(--primary); font-family: var(--font-mono);" id="telemetryLatency">0.00s</strong>
+              </div>
+              <div style="text-align: center; border-right: 1px solid rgba(255,255,255,0.08);">
+                <span style="display: block; font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase;">Context Size</span>
+                <strong style="font-size: 0.8rem; color: var(--accent-gold); font-family: var(--font-mono);" id="telemetryInTokens">0</strong>
+              </div>
+              <div style="text-align: center;">
+                <span style="display: block; font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase;">Generated Output</span>
+                <strong style="font-size: 0.8rem; color: var(--secondary); font-family: var(--font-mono);" id="telemetryOutTokens">0</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Button -->
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.75rem; margin-top: auto;">
+          <button type="button" id="btnSaveSystemPrompt" class="btn btn-primary" style="height: 36px; padding: 0 1rem; font-size: 0.72rem; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; width: 100%; justify-content: center;">
+            <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Update AI Behavior
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <canvas id="confettiCanvas"></canvas>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
