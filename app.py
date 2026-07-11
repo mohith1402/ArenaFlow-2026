@@ -26,7 +26,12 @@ st.markdown("""
             padding-right: 0rem !important;
         }
         iframe {
+            height: calc(100vh - 20px) !important;
+            width: 100% !important;
             border: none !important;
+        }
+        .element-container, .stHtml, .stMarkdown {
+            height: calc(100vh - 20px) !important;
         }
     </style>
 """, unsafe_allow_html=True)
