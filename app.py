@@ -16,22 +16,24 @@ st.set_page_config(
 # so that the custom Web visualizer displays fullscreen with zero clutter.
 st.markdown("""
     <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
+        /* Hide default Streamlit headers and footers to reclaim space */
+        #MainMenu {display: none !important;}
+        footer {display: none !important;}
+        header {display: none !important;}
+        
         .block-container {
             padding-top: 0rem !important;
             padding-bottom: 0rem !important;
             padding-left: 0rem !important;
             padding-right: 0rem !important;
         }
+        
+        /* Force the component iframe to occupy exactly the viewport height */
         iframe {
-            height: calc(100vh - 20px) !important;
+            height: calc(100vh - 40px) !important;
             width: 100% !important;
             border: none !important;
-        }
-        .element-container, .stHtml, .stMarkdown {
-            height: calc(100vh - 20px) !important;
+            display: block;
         }
     </style>
 """, unsafe_allow_html=True)
