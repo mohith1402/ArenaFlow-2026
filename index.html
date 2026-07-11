@@ -138,9 +138,9 @@
                     <button class="quick-prompt-chip" data-prompt="Where is the emergency first aid station?"><i data-lucide="heart-pulse"></i> Medical Aid</button>
                   </div>
 
-                  <div class="chat-input-wrapper">
-                    <input type="text" id="chatInputField" placeholder="Ask about gates, transit, policies..." />
-                    <button id="sendChatBtn" class="btn-send"><i data-lucide="send"></i></button>
+                   <div class="chat-input-wrapper">
+                    <input type="text" id="chatInputField" placeholder="Ask about gates, transit, policies..." aria-label="Type your query to the stadium assistant" />
+                    <button id="sendChatBtn" class="btn-send" aria-label="Send message to stadium assistant"><i data-lucide="send"></i></button>
                   </div>
                 </div>
               </div>
@@ -153,10 +153,10 @@
                 <div class="ticket-scanner-card">
                   <p class="widget-desc">Scan your digital barcoded ticket to pre-plan security lanes and map routes.</p>
                   <div class="form-group">
-                    <label>Enter Seat Section Number (101 - 112)</label>
+                    <label for="ticketSeatInput">Enter Seat Section Number (101 - 112)</label>
                     <div class="scanner-input-row">
-                      <input type="number" id="ticketSeatInput" min="101" max="112" placeholder="e.g., 102" class="form-input" />
-                      <button id="btnScanTicket" class="btn btn-primary"><i data-lucide="scan"></i> Scan</button>
+                      <input type="number" id="ticketSeatInput" min="101" max="112" placeholder="e.g., 102" class="form-input" aria-label="Enter seat section number between 101 and 112" />
+                      <button id="btnScanTicket" class="btn btn-primary" aria-label="Scan ticket seat section number"><i data-lucide="scan"></i> Scan</button>
                     </div>
                   </div>
                 </div>
@@ -776,14 +776,14 @@
                   <div class="sensor-row">
                     <span>HVAC Temperature</span>
                     <div class="slider-control-group">
-                      <input type="range" id="hvacSlider" min="65" max="78" value="72" class="range-slider" />
+                      <input type="range" id="hvacSlider" min="65" max="78" value="72" class="range-slider" aria-label="Adjust stadium HVAC temperature setting" />
                       <strong id="hvacValue">72°F</strong>
                     </div>
                   </div>
                   <div class="sensor-row">
                     <span>Stadium Floodlights</span>
                     <div class="slider-control-group">
-                      <input type="range" id="lightSlider" min="20" max="100" value="85" class="range-slider" />
+                      <input type="range" id="lightSlider" min="20" max="100" value="85" class="range-slider" aria-label="Adjust stadium floodlights brightness intensity" />
                       <strong id="lightValue">85%</strong>
                     </div>
                   </div>

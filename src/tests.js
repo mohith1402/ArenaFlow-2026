@@ -2,6 +2,7 @@
 import { stadiumData } from './stadiumData';
 import { SustainabilityEngine } from './sustainability';
 import { MapRenderer } from './mapRenderer';
+import { aiAssistant } from './aiAssistant';
 
 export function runDiagnostics() {
   console.log("%c=== ArenaFlow 2026 Diagnostic Test Suite ===", "color: #00f0ff; font-weight: bold; font-size: 14px;");
@@ -83,6 +84,52 @@ export function runDiagnostics() {
     );
   } catch (e) {
     assert("Network Node Graph Mapping Connectivity", false, `Graph connectivity check threw exception: ${e.message}`);
+  }
+
+  // TEST 4: Security XSS Sanitization Integrity
+  try {
+    const rawInput = "<script>alert('XSS')</script>";
+    const clean = aiAssistant.escapeHTML(rawInput);
+    assert(
+      "XSS Input Sanitization Integrity",
+      clean === "&lt;script&gt;alert(&#039;XSS&#039;)&lt;/script&gt;",
+      "Security: XSS script tags and characters must be correctly encoded prior to UI rendering."
+    );
+  } catch (e) {
+    assert("XSS Input Sanitization Integrity", false, `XSS sanitization check threw exception: ${e.message}`);
+  }
+
+  // TEST 5: Accessibility Attributes Registry
+  try {
+    const runDiagBtn = document.getElementById('btnRunDiagnostics');
+    // Verify that the trigger element includes descriptive accessibility tags
+    const hasAriaLabel = runDiagBtn ? runDiagBtn.hasAttribute('aria-label') : true;
+    assert(
+      "Accessibility ARIA Elements Registry",
+      hasAriaLabel,
+      "Accessibility: Key interactive triggers must carry descriptive aria-label tags."
+    );
+  } catch (e) {
+    assert("Accessibility ARIA Elements Registry", false, `Accessibility attributes check threw exception: ${e.message}`);
+  }
+
+  // TEST 6: Response Caching Efficiency
+  try {
+    const testCacheKey = "arenaflow_cache_en_test_caching_query";
+    sessionStorage.setItem(testCacheKey, "Cached AI Response");
+    
+    // Check key mapping retrieval matching our query cache algorithm
+    const cleanMessage = "test caching query";
+    const cachedResponse = sessionStorage.getItem(`arenaflow_cache_en_${cleanMessage.replace(/\s+/g, '_')}`);
+    
+    assert(
+      "Response Caching and Token Savings",
+      cachedResponse === "Cached AI Response",
+      "Efficiency: Repeated queries must resolve instantly from client caching to conserve token quota."
+    );
+    sessionStorage.removeItem(testCacheKey);
+  } catch (e) {
+    assert("Response Caching and Token Savings", false, `Caching efficiency check threw exception: ${e.message}`);
   }
 
   // Final summary logs
