@@ -4,7 +4,7 @@
 
 ArenaFlow 2026 is a premium, GenAI-enabled stadium operations and tournament navigation suite built for **MetLife Stadium** during the **FIFA World Cup 2026**. Merging fan convenience widgets with operational mission control analytics, this dashboard optimizes crowd movement, transit access, sustainability goals, and emergency protocols in a sleek, high-contrast, glassmorphic layout.
 
-🚀 **Live Web App (Streamlit)**: [ArenaFlow 2026 Dashboard](https://your-app-name.streamlit.app) *(Replace with your deployed Streamlit URL)*
+🚀 **Live Web App (Streamlit)**: [ArenaFlow 2026 Dashboard](https://arenaflow-2026.streamlit.app/)
 
 ---
 
