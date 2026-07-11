@@ -2244,6 +2244,7 @@ body.evac-active svg#stadiumSvg .map-section {
 .footer-stats {
   display: flex;
   gap: 1.5rem;
+  padding-right: 95px;
 }
 
 .footer-stats strong {
