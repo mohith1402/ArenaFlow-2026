@@ -54,14 +54,14 @@ if os.path.exists(index_path):
                     css_content = cf.read()
                 # Swap link tag with style block
                 pattern = rf'<link[^>]*href="[^"]*{filename}"[^>]*>'
-                html_content = re.sub(pattern, f"<style>{css_content}</style>", html_content)
+                html_content = re.sub(pattern, lambda m: f"<style>{css_content}</style>", html_content)
                 
             elif filename.endswith(".js"):
                 with open(filepath, "r", encoding="utf-8") as jf:
                     js_content = jf.read()
                 # Swap script tag with module block
                 pattern = rf'<script[^>]*src="[^"]*{filename}"[^>]*></script>'
-                html_content = re.sub(pattern, f"<script type=\"module\">{js_content}</script>", html_content)
+                html_content = re.sub(pattern, lambda m: f"<script type=\"module\">{js_content}</script>", html_content)
 
     # 5. Render Fullscreen HTML Frame
     # Height can be configured below. 950px fits most standard displays perfectly.
