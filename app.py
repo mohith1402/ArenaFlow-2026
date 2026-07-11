@@ -21,6 +21,14 @@ st.markdown("""
         footer {display: none !important;}
         header {display: none !important;}
         
+        /* Force Streamlit parent page to be fullscreen and hide scrollbars */
+        html, body {
+            overflow: hidden !important;
+            height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
         .block-container {
             padding-top: 0rem !important;
             padding-bottom: 0rem !important;
@@ -30,7 +38,7 @@ st.markdown("""
         
         /* Force the component iframe to occupy exactly the viewport height */
         iframe {
-            height: calc(100vh - 40px) !important;
+            height: 100vh !important;
             width: 100% !important;
             border: none !important;
             display: block;

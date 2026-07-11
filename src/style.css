@@ -78,6 +78,13 @@ body.light-mode {
   padding: 0;
 }
 
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
 body {
   background-color: var(--bg-space);
   background-image: var(--bg-gradient);
@@ -87,10 +94,8 @@ body {
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 0.95rem;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
 }
 
 /* Perfect Icon Alignment & Centering Utility */
