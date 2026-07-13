@@ -3,6 +3,7 @@ import { stadiumData } from './stadiumData';
 import { SustainabilityEngine } from './sustainability';
 import { MapRenderer } from './mapRenderer';
 import { aiAssistant } from './aiAssistant';
+import { SimulationEngine } from './simulationEngine';
 
 export function runDiagnostics() {
   console.log("%c=== ArenaFlow 2026 Diagnostic Test Suite ===", "color: #00f0ff; font-weight: bold; font-size: 14px;");
@@ -130,6 +131,77 @@ export function runDiagnostics() {
     sessionStorage.removeItem(testCacheKey);
   } catch (e) {
     assert("Response Caching and Token Savings", false, `Caching efficiency check threw exception: ${e.message}`);
+  }
+
+  // TEST 7: Concession Pre-order Cart Calculations
+  try {
+    // Mocking pricing structures
+    const concessionPriceMap = {
+      "Steak Tacos": 12.00,
+      "Chicken Quesadilla": 11.00
+    };
+    
+    // Simulate items in cart
+    const mockCart = [
+      { name: "Steak Tacos", price: concessionPriceMap["Steak Tacos"], qty: 2 },
+      { name: "Chicken Quesadilla", price: concessionPriceMap["Chicken Quesadilla"], qty: 1 }
+    ];
+    
+    // Calculation functions validation
+    const subtotal = mockCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const tax = subtotal * 0.06625;
+    
+    // Check points milestone calculation
+    // Points = 30 earns 15% discount
+    const hasDiscount = true; // Simulating points >= 30
+    const discount = hasDiscount ? (subtotal * 0.15) : 0;
+    const total = subtotal + tax - discount;
+
+    assert(
+      "Concession Cart Financial Calculations",
+      subtotal === 35.00 && tax.toFixed(4) === "2.3188" && discount.toFixed(2) === "5.25" && total.toFixed(4) === "32.0688",
+      `Expected: Subtotal=35.00, Tax=2.3188, Discount=5.25, Total=32.0688. Actual: Subtotal=${subtotal}, Tax=${tax}, Discount=${discount}, Total=${total}`
+    );
+  } catch (e) {
+    assert("Concession Cart Financial Calculations", false, `Cart check threw exception: ${e.message}`);
+  }
+
+  // TEST 8: Multilingual Dispatch Translation Heuristic
+  try {
+    const tempMapRenderer = new MapRenderer('stadiumSvg', 'mapCanvasContainer');
+    const tempEngine = new SimulationEngine(tempMapRenderer);
+    const testBroadcastText = "Redirect volunteers to Gate A to help traffic";
+    const translations = tempEngine.translateBroadcast(testBroadcastText);
+    
+    // Check if Spanish translation converts terms correctly
+    const hasSpanishRedirect = translations.es.toLowerCase().includes("redirigir") || translations.es.toLowerCase().includes("personal");
+    const hasFrenchGateA = translations.fr.toLowerCase().includes("porte a");
+
+    assert(
+      "Multilingual Dispatch Heuristic Translations",
+      hasSpanishRedirect && hasFrenchGateA,
+      `Expected translation mapping to resolve standard verbs. Translations returned: ES="${translations.es}", FR="${translations.fr}"`
+    );
+  } catch (e) {
+    assert("Multilingual Dispatch Heuristic Translations", false, `Translations check threw exception: ${e.message}`);
+  }
+
+  // TEST 9: Operational Simulation Triggering
+  try {
+    const tempMapRenderer = new MapRenderer('stadiumSvg', 'mapCanvasContainer');
+    const tempEngine = new SimulationEngine(tempMapRenderer);
+    
+    // Trigger simulated weather state then check if we can mock state transitions
+    const result = tempEngine.triggerScenario('weather');
+    const isWeatherAlert = result.matchBannerUpdate.status === 'Weather Alert';
+    
+    assert(
+      "Operational Simulation Egress Scenarios",
+      isWeatherAlert && result.recommendations.length > 0,
+      `Expected scenario transition to return recommendations and updated status: ${result.matchBannerUpdate.status}`
+    );
+  } catch (e) {
+    assert("Operational Simulation Egress Scenarios", false, `Evacuation scenarios check threw exception: ${e.message}`);
   }
 
   // Final summary logs

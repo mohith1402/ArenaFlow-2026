@@ -25,7 +25,7 @@ class AIAssistant {
 
   // Get key from storage
   getApiKey() {
-    return localStorage.getItem(this.storageKey) || 'AIzaSyBagkIdVsB0UC-jBPeyWU_PpvrwQlYJBzU';
+    return localStorage.getItem(this.storageKey) || import.meta.env.VITE_GEMINI_API_KEY || '';
   }
 
   // Clear key
@@ -71,8 +71,8 @@ class AIAssistant {
     if (apiKey) {
       try {
         const rawResponse = await this.callGeminiAPI(apiKey, cleanMessage, currentLanguage);
-        // Security: Sanitize output from model to prevent prompt injection payload injection
-        aiResponse = this.escapeHTML(rawResponse);
+        // Retain raw response (UI/main.js handles HTML escaping safely)
+        aiResponse = rawResponse;
       } catch (error) {
         console.error("Gemini API Error, falling back to local FAQs:", error);
         this.lastLatency = '0.05';

@@ -116,6 +116,47 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
   }
+
+  // Safe markdown formatter working on already escaped text to prevent XSS
+  function formatMarkdown(html) {
+    if (!html) return '';
+    
+    // Bold: **text** -> <strong>text</strong>
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Italics: *text* -> <em>text</em>
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Inline code: `code` -> <code>
+    html = html.replace(/`(.*?)`/g, '<code style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.35rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85em; border: 1px solid rgba(255,255,255,0.05);">$1</code>');
+    
+    const lines = html.split('\n');
+    let insideList = false;
+    const processedLines = [];
+    
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        if (!insideList) {
+          processedLines.push('<ul style="margin: 0.25rem 0 0.5rem 1rem; padding-left: 0.5rem; list-style-type: disc;">');
+          insideList = true;
+        }
+        processedLines.push(`<li style="margin-bottom: 0.2rem; line-height: 1.4;">${trimmed.substring(2)}</li>`);
+      } else {
+        if (insideList) {
+          processedLines.push('</ul>');
+          insideList = false;
+        }
+        processedLines.push(trimmed ? `<p style="margin: 0 0 0.5rem 0; line-height: 1.45;">${trimmed}</p>` : '<br/>');
+      }
+    });
+    
+    if (insideList) {
+      processedLines.push('</ul>');
+    }
+    
+    return processedLines.join('');
+  }
   let isEvacuationMode = false;
   
   // Volunteer staff headcounts (mutable state)
@@ -149,9 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeAllCustomDropdowns();
   });
 
-  // Setup Gemini API Connection (Implicitly configured key)
-  const defaultApiKey = 'AIzaSyBagkIdVsB0UC-jBPeyWU_PpvrwQlYJBzU';
-  aiAssistant.saveApiKey(defaultApiKey);
+  // Setup Gemini API Connection (uses localStorage or build environment variables)
 
   // 3. Pill Capsule Portal View Toggle
   const btnToggleFan = document.getElementById('btnToggleFan');
@@ -1135,11 +1174,11 @@ document.addEventListener('DOMContentLoaded', () => {
     messageDiv.className = `message ${sender}-message`;
     // Security: escape raw message strings against XSS injections
     const escaped = escapeHTML(text);
-    const formattedText = escaped.replace(/\n/g, '<br/>');
+    const formattedText = formatMarkdown(escaped);
 
     messageDiv.innerHTML = `
       <div class="message-content">
-        <p>${formattedText}</p>
+        ${formattedText}
       </div>
       <span class="message-meta">${sender === 'user' ? 'You' : 'FIFA AI'} • ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
     `;
@@ -1233,8 +1272,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const recContainer = document.getElementById('aiRecommendations');
     recContainer.innerHTML = '';
     
-    // Randomize the order of recommendations to keep suggestions fresh
-    const randomizedRecs = [...result.recommendations].sort(() => Math.random() - 0.5);
+    // Fisher-Yates shuffle algorithm to randomize recommendations order
+    const randomizedRecs = [...result.recommendations];
+    for (let i = randomizedRecs.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [randomizedRecs[i], randomizedRecs[j]] = [randomizedRecs[j], randomizedRecs[i]];
+    }
     
     randomizedRecs.forEach(rec => {
       const recItem = document.createElement('div');
@@ -1618,7 +1661,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           const testResults = runDiagnostics();
           if (testResults.success) {
-            appendSystemMessage(`%c DIAGNOSTIC INTEGRITY: Passed ${testResults.passed}/${testResults.total} assertions. Code structures, metric updates, and graph coordinates are operational. Details logged in Developer Console.`);
+            appendSystemMessage(`DIAGNOSTIC INTEGRITY: Passed ${testResults.passed}/${testResults.total} assertions. Code structures, metric updates, and graph coordinates are operational. Details logged in Developer Console.`);
           } else {
             appendSystemMessage(`❌ DIAGNOSTIC FAILURE: ${testResults.failures.length} diagnostic assertions failed. Check Developer Console for logs.`);
           }
